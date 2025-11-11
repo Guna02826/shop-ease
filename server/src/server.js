@@ -9,13 +9,16 @@ import path from "path";
 
 dotenv.config();
 const app = express();
-app.use(express.json());
 
+// Connect to database
 connectDB();
 
-app.use(cors());
+// Middleware
 app.use(express.json());
 
+// --------------------
+// PUBLIC ROUTE: Health Check
+// --------------------
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "success",
@@ -24,20 +27,36 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// --------------------
+// PROTECTED ROUTES: Apply CORS only here
+// --------------------
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+
+app.use(
+  ["/api/auth", "/api/products", "/api/orders"],
+  cors({
+    origin: CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
+
+// Routes
 app.use("/api/auth", authRoutes);
-
 app.use("/api/products", productRoutes);
-
 app.use("/api/orders", orderRoutes);
 
+// --------------------
+// PRODUCTION: Serve React frontend
+// --------------------
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(path.resolve(), "client/build")));
 
-  app.use((req, res, next) => {
+  app.get("*", (req, res) => {
     if (!req.path.startsWith("/api")) {
       res.sendFile(path.join(path.resolve(), "client/build", "index.html"));
     } else {
-      next();
+      res.status(404).json({ message: "API route not found" });
     }
   });
 } else {
@@ -46,6 +65,9 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+// --------------------
+// 404 & Error Handler
+// --------------------
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
   res.status(404);
@@ -54,15 +76,16 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode);
-  res.json({
+  res.status(statusCode).json({
     message: err.message,
     stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 });
 
+// --------------------
+// Start Server
+// --------------------
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
