@@ -1,0 +1,70 @@
+# =========================
+# Node.js
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# Logs
+# =========================
+logs
+*.log
+log.txt
+log/
+debug.log
+
+# =========================
+# Build Output
+# =========================
+dist/
+build/
+.cache/
+.vite/
+coverage/
+
+# =========================
+# Editor & OS Files
+# =========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# =========================
+# Project Specific
+# =========================
+# Ignore compiled or temporary data folders (if any)
+client/.env
+server/.env
+client/dist/
+server/dist/
+server/uploads/
+server/tmp/
+
+# Ignore test coverage or reports
+coverage/
+reports/
+
+# =========================
+# Misc
+# =========================
+*.local
