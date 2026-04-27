@@ -20,11 +20,7 @@ app.use(express.json());
 // PUBLIC ROUTE: Health Check
 // --------------------
 app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "Shop-ease API is running 🚀",
-    timestamp: new Date().toISOString(),
-  });
+  res.status(200).json({ ok: true });
 });
 
 // --------------------
